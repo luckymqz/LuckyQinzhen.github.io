@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maxwell Ma | Robotics & AI Researcher</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a24;
+            --accent-cyan: #00d4ff;
+            --accent-magenta: #ff0080;
+            --accent-green: #00ff9d;
+            --text-primary: #f0f0f5;
+            --text-secondary: #8888a0;
+            --text-muted: #5555666;
+            --border-color: #2a2a3a;
+            --glow-cyan: rgba(0, 212, 255, 0.15);
+            --glow-magenta: rgba(255, 0, 128, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated background grid */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background-image: 
+                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 60px 60px; }
+        }
+
+        /* Floating orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: var(--glow-cyan);
+            top: 10%;
+            right: 10%;
+            animation: float1 15s ease-in-out infinite;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: var(--glow-magenta);
+            bottom: 20%;
+            left: 5%;
+            animation: float2 18s ease-in-out infinite;
+        }
+
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-30px, 30px); }
+        }
+
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(20px, -20px); }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--accent-cyan);
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 400;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--accent-cyan);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Main content */
+        main {
+            position: relative;
+            z-index: 1;
+        }
+
+        section {
+            padding: 6rem 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-top: 80px;
+        }
+
+        .hero-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+            letter-spacing: 3px;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease forwards 0.2s;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease forwards 0.4s;
+        }
+
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-magenta));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease forwards 0.6s;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease forwards 0.8s;
+        }
+
+        .btn {
+            padding: 0.9rem 2rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-cyan), #0099cc);
+            color: var(--bg-primary);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .section-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--accent-cyan);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .section-line {
+            flex-grow: 1;
+            height: 1px;
+            background: var(--border-color);
+            max-width: 300px;
+        }
+
+        /* About Section */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .about-text p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+        }
+
+        .about-highlights {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .highlight-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .highlight-card:hover {
+            border-color: var(--accent-cyan);
+            transform: translateX(5px);
+        }
+
+        .highlight-card h4 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent-cyan);
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .highlight-card p {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Experience Section */
+        .experience-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .exp-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .exp-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--accent-cyan), var(--accent-magenta));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .exp-card:hover {
+            border-color: var(--accent-cyan);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .exp-card:hover::before {
+            opacity: 1;
+        }
+
+        .exp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .exp-title h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .exp-title .company {
+            color: var(--accent-cyan);
+            font-weight: 500;
+        }
+
+        .exp-meta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-align: right;
+        }
+
+        .exp-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .exp-bullets {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .exp-bullet {
+            display: flex;
+            gap: 0.8rem;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .exp-bullet::before {
+            content: '→';
+            color: var(--accent-cyan);
+            flex-shrink: 0;
+        }
+
+        /* Skills Section */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .skill-category {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .skill-category:hover {
+            border-color: var(--accent-cyan);
+        }
+
+        .skill-category h4 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--accent-cyan);
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .skill-tag {
+            background: rgba(0, 212, 255, 0.08);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+        }
+
+        .skill-tag:hover {
+            background: rgba(0, 212, 255, 0.15);
+            border-color: var(--accent-cyan);
+        }
+
+        /* Education Section */
+        .education-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .edu-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .edu-card:hover {
+            border-color: var(--accent-cyan);
+        }
+
+        .edu-degree {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .edu-school {
+            color: var(--accent-cyan);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .edu-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .edu-achievement {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .edu-achievement::before {
+            content: '★';
+            color: var(--accent-green);
+        }
+
+        /* Honors Section */
+        .honors-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .honor-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.2rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .honor-item:hover {
+            border-color: var(--accent-green);
+            transform: translateX(5px);
+        }
+
+        .honor-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .honor-text {
+            flex-grow: 1;
+        }
+
+        .honor-text h4 {
+            font-weight: 500;
+            margin-bottom: 0.2rem;
+        }
+
+        .honor-text span {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Contact Section */
+        .contact-content {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .contact-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-content p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .contact-link:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem;
+            border-top: 1px solid var(--border-color);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 1.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            section {
+                padding: 4rem 1.5rem;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .exp-header {
+                flex-direction: column;
+            }
+
+            .exp-meta {
+                text-align: left;
+            }
+
+            .education-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-links {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <nav>
+        <div class="logo">MAXWELL.MA</div>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#education">Education</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section class="hero" id="home">
+            <span class="hero-label">ROBOTICS & AI RESEARCHER</span>
+            <h1>Hi, I'm <span class="highlight">Maxwell Ma</span></h1>
+            <p class="hero-subtitle">
+                Graduate researcher specializing in motion planning, vision-language-action systems, 
+                and sim-to-real robotics. Building intelligent systems that bridge simulation and reality.
+            </p>
+            <div class="hero-cta">
+                <a href="#contact" class="btn btn-primary">Get in Touch</a>
+                <a href="#experience" class="btn btn-secondary">View My Work</a>
+            </div>
+        </section>
+
+        <section id="about">
+            <div class="section-header">
+                <span class="section-number">01</span>
+                <h2 class="section-title">About Me</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>
+                        I'm a graduate student in Electronic & Computer Engineering at Rice University, 
+                        passionate about pushing the boundaries of robotic intelligence through advanced 
+                        motion planning and machine learning.
+                    </p>
+                    <p>
+                        My research spans high-dimensional kinodynamic planning, vision-language-action 
+                        pipelines, and the challenging domain of sim-to-real transfer. I work at the 
+                        intersection of classical robotics algorithms and modern deep learning approaches.
+                    </p>
+                    <p>
+                        Before Rice, I spent three years at Baidu building production-scale AI systems, 
+                        including end-to-end LLM and RAG pipelines for enterprise applications. This 
+                        industry experience shapes my research with a focus on practical, deployable solutions.
+                    </p>
+                </div>
+                <div class="about-highlights">
+                    <div class="highlight-card">
+                        <h4>CURRENT FOCUS</h4>
+                        <p>Motion Planning & VLA Systems</p>
+                    </div>
+                    <div class="highlight-card">
+                        <h4>RESEARCH LABS</h4>
+                        <p>Kavraki Lab & RobotII Lab @ Rice</p>
+                    </div>
+                    <div class="highlight-card">
+                        <h4>INDUSTRY EXP</h4>
+                        <p>3 Years at Baidu AI</p>
+                    </div>
+                    <div class="highlight-card">
+                        <h4>EXPERTISE</h4>
+                        <p>C++, Python, ROS 2, Isaac Sim</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="experience">
+            <div class="section-header">
+                <span class="section-number">02</span>
+                <h2 class="section-title">Experience</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="experience-grid">
+                <div class="exp-card fade-in">
+                    <div class="exp-header">
+                        <div class="exp-title">
+                            <h3>Research Assistant</h3>
+                            <span class="company">Kavraki Lab, Rice University</span>
+                        </div>
+                        <div class="exp-meta">
+                            Aug 2025 - Present<br>Houston, TX
+                        </div>
+                    </div>
+                    <p class="exp-description">
+                        Working with Prof. Kavraki's group on high-dimensional, kinodynamic, and 
+                        non-holonomic motion planning, and task-motion planning under uncertainty.
+                    </p>
+                    <div class="exp-bullets">
+                        <div class="exp-bullet">Built OMPL pipelines in C++ for Dubins/Reeds-Shepp/car-like systems; evaluated RRT*, RRG, KPIECE, EST, BIT*, FMT* under custom objectives</div>
+                        <div class="exp-bullet">Implemented Informed RRT*/RRG variants with admissible heuristics achieving 30% lower cost and 100× faster planning</div>
+                        <div class="exp-bullet">Coupled symbolic task planners (PDDL/pyperplan) with OMPL for end-to-end task-feasible trajectory generation</div>
+                        <div class="exp-bullet">Trained PPO/SAC controllers in NVIDIA Isaac Sim to track OMPL waypoints under model errors</div>
+                    </div>
+                </div>
+
+                <div class="exp-card fade-in">
+                    <div class="exp-header">
+                        <div class="exp-title">
+                            <h3>Research Assistant</h3>
+                            <span class="company">RobotII Lab, Rice University</span>
+                        </div>
+                        <div class="exp-meta">
+                            Aug 2025 - Present<br>Houston, TX
+                        </div>
+                    </div>
+                    <p class="exp-description">
+                        Developing Vision-Language-Action pipelines and robot prototypes for 
+                        tabletop manipulation tasks.
+                    </p>
+                    <div class="exp-bullets">
+                        <div class="exp-bullet">Prototyped VLA pipelines with LeRobot; adapted Open-PI dataset for instruction-conditioned policies in PyTorch & JAX</div>
+                        <div class="exp-bullet">Tested open-source VLA models end-to-end in NVIDIA Isaac Sim, comparing success rate, trajectory length, and latency</div>
+                        <div class="exp-bullet">Built robot prototypes with ROS 2 for camera/pose streams, language prompt parsing, and action execution</div>
+                        <div class="exp-bullet">Established software architecture with reproducible training/eval scripts and CI for clean sim-to-real integration</div>
+                    </div>
+                </div>
+
+                <div class="exp-card fade-in">
+                    <div class="exp-header">
+                        <div class="exp-title">
+                            <h3>Senior Strategy AI Algorithm Engineer</h3>
+                            <span class="company">Baidu</span>
+                        </div>
+                        <div class="exp-meta">
+                            Sep 2022 - Aug 2025<br>Beijing, China
+                        </div>
+                    </div>
+                    <p class="exp-description">
+                        Led development of an Intelligent Agent for the legal domain, building 
+                        end-to-end LLM + RAG systems for enterprise-grade applications.
+                    </p>
+                    <div class="exp-bullets">
+                        <div class="exp-bullet">Owned end-to-end training stack: domain-adaptive pre-training → SFT → RLHF (PPO) with comprehensive evaluation harness</div>
+                        <div class="exp-bullet">Built RAG pipeline with vector retrieval + semantic rerank + hybrid BM25, boosting answer quality +60% while cutting p95 latency -80%</div>
+                        <div class="exp-bullet">Led cross-functional pod (infra, data, legal SMEs): design docs, KPIs, annotation guidelines, weekly A/B reviews</div>
+                        <div class="exp-bullet">Implemented streaming indexing, caching, and quantization for production-scale deployment</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills">
+            <div class="section-header">
+                <span class="section-number">03</span>
+                <h2 class="section-title">Skills</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="skills-grid">
+                <div class="skill-category fade-in">
+                    <h4>Robotics & VLA</h4>
+                    <div class="skill-tags">
+                        <span class="skill-tag">LeRobot</span>
+                        <span class="skill-tag">Open-PI</span>
+                        <span class="skill-tag">ROS 2</span>
+                        <span class="skill-tag">NVIDIA Isaac Sim</span>
+                        <span class="skill-tag">OMPL</span>
+                        <span class="skill-tag">RRT*</span>
+                        <span class="skill-tag">BIT*</span>
+                        <span class="skill-tag">Task-Motion Planning</span>
+                    </div>
+                </div>
+                <div class="skill-category fade-in">
+                    <h4>Deep Learning & RL</h4>
+                    <div class="skill-tags">
+                        <span class="skill-tag">PyTorch</span>
+                        <span class="skill-tag">JAX</span>
+                        <span class="skill-tag">Transformers</span>
+                        <span class="skill-tag">Stable-Baselines3</span>
+                        <span class="skill-tag">PPO</span>
+                        <span class="skill-tag">SAC</span>
+                        <span class="skill-tag">TensorRT</span>
+                        <span class="skill-tag">ONNX</span>
+                    </div>
+                </div>
+                <div class="skill-category fade-in">
+                    <h4>LLM / GenAI</h4>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Pre-training</span>
+                        <span class="skill-tag">SFT</span>
+                        <span class="skill-tag">RLHF</span>
+                        <span class="skill-tag">DPO</span>
+                        <span class="skill-tag">Prompt Engineering</span>
+                        <span class="skill-tag">Guardrails</span>
+                    </div>
+                </div>
+                <div class="skill-category fade-in">
+                    <h4>RAG & Search</h4>
+                    <div class="skill-tags">
+                        <span class="skill-tag">FAISS</span>
+                        <span class="skill-tag">ScaNN</span>
+                        <span class="skill-tag">Milvus</span>
+                        <span class="skill-tag">BM25</span>
+                        <span class="skill-tag">LangChain</span>
+                        <span class="skill-tag">LlamaIndex</span>
+                    </div>
+                </div>
+                <div class="skill-category fade-in">
+                    <h4>Languages</h4>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">C++</span>
+                        <span class="skill-tag">SQL</span>
+                        <span class="skill-tag">Bash</span>
+                        <span class="skill-tag">CUDA</span>
+                    </div>
+                </div>
+                <div class="skill-category fade-in">
+                    <h4>MLOps & Infra</h4>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Docker</span>
+                        <span class="skill-tag">Conda</span>
+                        <span class="skill-tag">FastAPI</span>
+                        <span class="skill-tag">AWS</span>
+                        <span class="skill-tag">PySpark</span>
+                        <span class="skill-tag">Redis</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="education">
+            <div class="section-header">
+                <span class="section-number">04</span>
+                <h2 class="section-title">Education</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="education-grid">
+                <div class="edu-card fade-in">
+                    <h3 class="edu-degree">Master of Electronic & Computer Engineering</h3>
+                    <p class="edu-school">Rice University</p>
+                    <p class="edu-date">Aug 2025 - Dec 2026</p>
+                </div>
+                <div class="edu-card fade-in">
+                    <h3 class="edu-degree">Bachelor of Electronic Information Engineering</h3>
+                    <p class="edu-school">Northwest Minzu University</p>
+                    <p class="edu-date">Sep 2018 - Jun 2022</p>
+                    <p class="edu-achievement">First-class Academic Excellence Scholarship (Rank 1/114)</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="honors">
+            <div class="section-header">
+                <span class="section-number">05</span>
+                <h2 class="section-title">Honors & Awards</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="honors-list">
+                <div class="honor-item fade-in">
+                    <div class="honor-icon">🏆</div>
+                    <div class="honor-text">
+                        <h4>1st Prize, 12th Lanqiao Cup National Software & IT Competition</h4>
+                        <span>Top 0.5% • July 2021</span>
+                    </div>
+                </div>
+                <div class="honor-item fade-in">
+                    <div class="honor-icon">🎓</div>
+                    <div class="honor-text">
+                        <h4>First-class Academic Excellence Scholarship</h4>
+                        <span>Rank 1/114 • Fall 2020</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact">
+            <div class="contact-content">
+                <h2>Let's <span class="highlight">Connect</span></h2>
+                <p>
+                    I'm always interested in discussing robotics research, AI systems, 
+                    and potential collaborations. Feel free to reach out!
+                </p>
+                <div class="contact-links">
+                    <a href="mailto:qm18@rice.edu" class="contact-link">
+                        <span>✉</span> qm18@rice.edu
+                    </a>
+                    <a href="tel:+13464383210" class="contact-link">
+                        <span>☎</span> (346) 438-3210
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 Maxwell Ma. Built with passion for robotics.</p>
+    </footer>
+
+    <script>
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
